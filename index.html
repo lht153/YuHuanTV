@@ -207,7 +207,7 @@
       background: linear-gradient(180deg, #353d56, #242d41) !important;
     }
 
-    #settingsPanel button,
+    #settingsPanel .p-3 button:not(.close-btn),
     #historyPanel button:not(.close-btn) {
       border-radius: 10px;
       border: 1px solid var(--ios-border);
@@ -216,7 +216,7 @@
       transition: all 0.2s ease;
     }
 
-    #settingsPanel button:hover,
+    #settingsPanel .p-3 button:not(.close-btn):hover,
     #historyPanel button:not(.close-btn):hover {
       background: rgba(255, 255, 255, 0.12);
       border-color: var(--ios-border-strong);
@@ -224,6 +224,9 @@
 
     #settingsPanel .close-btn,
     #historyPanel .close-btn {
+      position: static !important;
+      top: auto !important;
+      right: auto !important;
       background: rgba(255, 255, 255, 0.04) !important;
       border: 1px solid var(--ios-border) !important;
       border-radius: 999px !important;
