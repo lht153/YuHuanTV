@@ -53,6 +53,7 @@ let doubanCurrentTag = '热门';
 let doubanPageStart = 0;
 const doubanPageSize = 16; // 一次显示的项目数量
 const doubanSearchCoverCache = new Map();
+const DOUBAN_LOCAL_PLACEHOLDER = 'image/nomedia.png';
 
 // 初始化豆瓣功能
 function initDouban() {
@@ -529,17 +530,13 @@ function renderDoubanCards(data, container) {
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;');
             
-            // 处理图片URL
-            // 首图仍尝试豆瓣封面，失败后会改用站内搜索结果里的 vod_pic 作为兜底
-            const originalCoverUrl = item.cover;
-            
             // 为不同设备优化卡片布局
             card.innerHTML = `
                 <div class="relative w-full aspect-[2/3] overflow-hidden cursor-pointer" onclick="fillAndSearchWithDouban('${safeTitle}')">
-                    <img src="${originalCoverUrl}" alt="${safeTitle}" 
+                    <img src="${DOUBAN_LOCAL_PLACEHOLDER}" alt="${safeTitle}" 
                         class="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                         data-douban-title="${safeTitle}"
-                        onerror="handleDoubanImageError(this)"
+                        onerror="this.onerror=null; this.src='${DOUBAN_LOCAL_PLACEHOLDER}'; this.classList.add('object-contain')"
                         loading="lazy" referrerpolicy="no-referrer">
                     <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
                     <div class="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-sm">
@@ -567,6 +564,9 @@ function renderDoubanCards(data, container) {
     // 清空并添加所有新元素
     container.innerHTML = "";
     container.appendChild(fragment);
+
+    // 卡片渲染完成后，再异步填充真实封面（使用与搜索结果同源的 vod_pic）
+    hydrateDoubanCardsCover(container);
 }
 
 async function getCoverFromSearch(title) {
@@ -578,55 +578,55 @@ async function getCoverFromSearch(title) {
     }
 
     try {
-        // 直接复用站内搜索接口，从 dbzy 里拿可展示的 vod_pic
-        const response = await fetch(`/api/search?wd=${encodeURIComponent(normalizedTitle)}&source=dbzy`);
-        if (!response.ok) {
-            doubanSearchCoverCache.set(normalizedTitle, '');
-            return '';
+        // 优先复用 search.js 的多源搜索函数，和 /s=xxx 页面一致
+        if (typeof window.searchByAPIAndKeyWord === 'function') {
+            const selected = JSON.parse(localStorage.getItem('selectedAPIs') || '[]');
+            const candidates = selected.length > 0 ? selected : ['tyyszy', 'bfzy', 'dyttzy', 'ruyi'];
+
+            for (const apiId of candidates) {
+                try {
+                    const list = await window.searchByAPIAndKeyWord(apiId, normalizedTitle);
+                    if (!Array.isArray(list) || list.length === 0) continue;
+
+                    const exact = list.find(item => (item?.vod_name || '').trim() === normalizedTitle);
+                    const fallback = list.find(item => typeof item?.vod_pic === 'string' && item.vod_pic.startsWith('http'));
+                    const cover = (exact?.vod_pic && exact.vod_pic.startsWith('http')) ? exact.vod_pic : (fallback?.vod_pic || '');
+                    if (cover) {
+                        doubanSearchCoverCache.set(normalizedTitle, cover);
+                        return cover;
+                    }
+                } catch (e) {
+                    // 单源失败跳过，继续下一个
+                }
+            }
         }
 
-        const data = await response.json();
-        const list = Array.isArray(data?.list) ? data.list : [];
-        if (list.length === 0) {
-            doubanSearchCoverCache.set(normalizedTitle, '');
-            return '';
-        }
-
-        // 优先同名结果，其次取首个有封面的结果
-        const exact = list.find(item => (item?.vod_name || '').trim() === normalizedTitle);
-        const fallback = list.find(item => typeof item?.vod_pic === 'string' && item.vod_pic.startsWith('http'));
-        const cover = (exact?.vod_pic && exact.vod_pic.startsWith('http')) ? exact.vod_pic : (fallback?.vod_pic || '');
-
-        doubanSearchCoverCache.set(normalizedTitle, cover);
-        return cover;
+        doubanSearchCoverCache.set(normalizedTitle, '');
+        return '';
     } catch (e) {
         doubanSearchCoverCache.set(normalizedTitle, '');
         return '';
     }
 }
 
-// 豆瓣封面加载失败时兜底处理：
-// 1) 用站内搜索结果的 vod_pic  2) 仍失败则占位图
-async function handleDoubanImageError(img) {
-    if (!img) return;
+async function hydrateDoubanCardsCover(container) {
+    if (!container) return;
 
-    // 第一次失败：尝试走“搜索页同逻辑”的封面来源（vod_pic）
-    if (!img.dataset.triedSearchCover) {
-        img.dataset.triedSearchCover = '1';
+    const images = container.querySelectorAll('img[data-douban-title]');
+    for (const img of images) {
+        if (img.dataset.coverHydrated === '1') continue;
+        img.dataset.coverHydrated = '1';
+
         const title = img.dataset.doubanTitle || img.alt || '';
-        const fallbackCover = await getCoverFromSearch(title);
-
-        if (fallbackCover) {
-            img.src = fallbackCover;
+        const cover = await getCoverFromSearch(title);
+        if (cover) {
+            img.src = cover;
             img.classList.remove('object-contain');
-            return;
+        } else {
+            img.src = DOUBAN_LOCAL_PLACEHOLDER;
+            img.classList.add('object-contain');
         }
     }
-
-    // 第二次失败：显示占位图，避免一直报错重试
-    img.onerror = null;
-    img.src = 'https://via.placeholder.com/300x450?text=无封面';
-    img.classList.add('object-contain');
 }
 
 // 重置到首页
