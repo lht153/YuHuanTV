@@ -648,15 +648,6 @@ function setDoubanCardLoading(img, isLoading) {
     }
 }
 
-function loadImageWithPromise(url) {
-    return new Promise((resolve, reject) => {
-        const preload = new Image();
-        preload.onload = () => resolve(url);
-        preload.onerror = reject;
-        preload.src = url;
-    });
-}
-
 async function hydrateDoubanCardsCover(container) {
     if (!container) return;
 
@@ -693,24 +684,30 @@ async function hydrateDoubanCardsCover(container) {
         }
     });
 
-    // 一次性回填，视觉上更接近“同时出现”
+    // 并发回填，避免逐张 await 导致“一个一个出来”
     for (const img of pendingImages) {
         const title = img.dataset.doubanTitle || img.alt || '';
         const cover = titleToCover.get(title) || '';
         if (cover) {
-            try {
-                await loadImageWithPromise(cover);
-                img.src = cover;
+            img.onload = () => {
+                img.onload = null;
+                img.onerror = null;
                 img.classList.remove('object-contain');
-            } catch (e) {
+                setDoubanCardLoading(img, false);
+            };
+            img.onerror = () => {
+                img.onload = null;
+                img.onerror = null;
                 img.src = DOUBAN_LOCAL_PLACEHOLDER;
                 img.classList.add('object-contain');
-            }
+                setDoubanCardLoading(img, false);
+            };
+            img.src = cover;
         } else {
             img.src = DOUBAN_LOCAL_PLACEHOLDER;
             img.classList.add('object-contain');
+            setDoubanCardLoading(img, false);
         }
-        setDoubanCardLoading(img, false);
     }
 }
 
