@@ -538,6 +538,9 @@ function renderDoubanCards(data, container) {
                         class="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                         data-douban-title="${safeTitle}"
                         loading="lazy" referrerpolicy="no-referrer">
+                    <div class="douban-cover-loading absolute inset-0 bg-black/50 backdrop-blur-[1px] flex items-center justify-center transition-opacity duration-300 opacity-100 pointer-events-none">
+                        <div class="w-6 h-6 border-2 border-white/80 border-t-transparent rounded-full animate-spin"></div>
+                    </div>
                     <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
                     <div class="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-sm">
                         <span class="text-yellow-400">★</span> ${safeRate}
@@ -630,6 +633,30 @@ async function runWithConcurrency(tasks, limit, worker) {
     return results;
 }
 
+function setDoubanCardLoading(img, isLoading) {
+    if (!img) return;
+    const cardMedia = img.closest('.relative');
+    if (!cardMedia) return;
+    const loadingEl = cardMedia.querySelector('.douban-cover-loading');
+    if (!loadingEl) return;
+    if (isLoading) {
+        loadingEl.classList.remove('opacity-0');
+        loadingEl.classList.add('opacity-100');
+    } else {
+        loadingEl.classList.remove('opacity-100');
+        loadingEl.classList.add('opacity-0');
+    }
+}
+
+function loadImageWithPromise(url) {
+    return new Promise((resolve, reject) => {
+        const preload = new Image();
+        preload.onload = () => resolve(url);
+        preload.onerror = reject;
+        preload.src = url;
+    });
+}
+
 async function hydrateDoubanCardsCover(container) {
     if (!container) return;
 
@@ -671,12 +698,19 @@ async function hydrateDoubanCardsCover(container) {
         const title = img.dataset.doubanTitle || img.alt || '';
         const cover = titleToCover.get(title) || '';
         if (cover) {
-            img.src = cover;
-            img.classList.remove('object-contain');
+            try {
+                await loadImageWithPromise(cover);
+                img.src = cover;
+                img.classList.remove('object-contain');
+            } catch (e) {
+                img.src = DOUBAN_LOCAL_PLACEHOLDER;
+                img.classList.add('object-contain');
+            }
         } else {
             img.src = DOUBAN_LOCAL_PLACEHOLDER;
             img.classList.add('object-contain');
         }
+        setDoubanCardLoading(img, false);
     }
 }
 
