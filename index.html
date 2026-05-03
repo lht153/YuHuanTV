@@ -93,6 +93,28 @@
       to   { transform: translateX(-50%); }
     }
 
+    @keyframes douban-card-in {
+      0% {
+        opacity: 0;
+        transform: translateY(12px) scale(0.985);
+        filter: blur(4px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+      }
+    }
+
+    .douban-card-appear {
+      opacity: 0;
+      animation-name: douban-card-in;
+      animation-duration: 520ms;
+      animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+      animation-fill-mode: forwards;
+      will-change: transform, opacity, filter;
+    }
+
     .container.mx-auto.px-4.py-8.flex.flex-col.h-screen {
       padding-top: 2.8rem;
     }
