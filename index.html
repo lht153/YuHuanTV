@@ -145,16 +145,6 @@
       box-shadow: var(--ios-shadow);
     }
 
-    /* 保证设置面板默认隐藏，点击按钮后再显示 */
-    #settingsPanel {
-      transform: translateX(100%);
-      transition: transform 0.3s ease;
-    }
-
-    #settingsPanel.show {
-      transform: translateX(0);
-    }
-
     #historyPanel h3,
     #settingsPanel h3,
     #settingsPanel h4 {
@@ -234,9 +224,6 @@
 
     #settingsPanel .close-btn,
     #historyPanel .close-btn {
-      position: static !important;
-      top: auto !important;
-      right: auto !important;
       background: rgba(255, 255, 255, 0.04) !important;
       border: 1px solid var(--ios-border) !important;
       border-radius: 999px !important;
