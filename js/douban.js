@@ -54,6 +54,7 @@ let doubanPageStart = 0;
 const doubanPageSize = 16; // 一次显示的项目数量
 const doubanSearchCoverCache = new Map();
 const DOUBAN_LOCAL_PLACEHOLDER = 'image/YuHuanTVLogonew.png';
+const DOUBAN_COVER_FETCH_CONCURRENCY = 6;
 
 // 初始化豆瓣功能
 function initDouban() {
@@ -608,16 +609,67 @@ async function getCoverFromSearch(title) {
     }
 }
 
+async function runWithConcurrency(tasks, limit, worker) {
+    const results = new Array(tasks.length);
+    let cursor = 0;
+
+    async function next() {
+        while (true) {
+            const index = cursor++;
+            if (index >= tasks.length) return;
+            results[index] = await worker(tasks[index], index);
+        }
+    }
+
+    const workers = [];
+    const size = Math.min(limit, tasks.length);
+    for (let i = 0; i < size; i++) {
+        workers.push(next());
+    }
+    await Promise.all(workers);
+    return results;
+}
+
 async function hydrateDoubanCardsCover(container) {
     if (!container) return;
 
-    const images = container.querySelectorAll('img[data-douban-title]');
+    const images = Array.from(container.querySelectorAll('img[data-douban-title]'));
+    if (images.length === 0) return;
+
+    // 仅处理未加载过封面的卡片
+    const pendingImages = [];
     for (const img of images) {
         if (img.dataset.coverHydrated === '1') continue;
         img.dataset.coverHydrated = '1';
+        pendingImages.push(img);
+    }
+    if (pendingImages.length === 0) return;
 
+    // 去重标题，避免同标题重复请求
+    const uniqueTitles = [...new Set(
+        pendingImages
+            .map(img => (img.dataset.doubanTitle || img.alt || '').trim())
+            .filter(Boolean)
+    )];
+
+    // 并发拉取封面，避免串行“一个一个出图”
+    const covers = await runWithConcurrency(
+        uniqueTitles,
+        DOUBAN_COVER_FETCH_CONCURRENCY,
+        async (title) => ({ title, cover: await getCoverFromSearch(title) })
+    );
+
+    const titleToCover = new Map();
+    covers.forEach(item => {
+        if (item && item.title) {
+            titleToCover.set(item.title, item.cover || '');
+        }
+    });
+
+    // 一次性回填，视觉上更接近“同时出现”
+    for (const img of pendingImages) {
         const title = img.dataset.doubanTitle || img.alt || '';
-        const cover = await getCoverFromSearch(title);
+        const cover = titleToCover.get(title) || '';
         if (cover) {
             img.src = cover;
             img.classList.remove('object-contain');
