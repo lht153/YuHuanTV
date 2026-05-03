@@ -145,6 +145,21 @@
       box-shadow: var(--ios-shadow);
     }
 
+    #historyPanel h3,
+    #settingsPanel h3,
+    #settingsPanel h4 {
+      color: var(--ios-text) !important;
+      background: none !important;
+      -webkit-text-fill-color: var(--ios-text) !important;
+      letter-spacing: 0.01em;
+    }
+
+    #historyPanel .text-gray-500,
+    #settingsPanel .text-gray-400,
+    #settingsPanel .text-gray-500 {
+      color: var(--ios-text-muted) !important;
+    }
+
     #settingsPanel .p-3.bg-\[\#151515\],
     #historyPanel .history-item {
       background: var(--ios-card) !important;
@@ -192,6 +207,36 @@
       background: linear-gradient(180deg, #353d56, #242d41) !important;
     }
 
+    #settingsPanel button,
+    #historyPanel button:not(.close-btn) {
+      border-radius: 10px;
+      border: 1px solid var(--ios-border);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--ios-text);
+      transition: all 0.2s ease;
+    }
+
+    #settingsPanel button:hover,
+    #historyPanel button:not(.close-btn):hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--ios-border-strong);
+    }
+
+    #settingsPanel .close-btn,
+    #historyPanel .close-btn {
+      background: rgba(255, 255, 255, 0.04) !important;
+      border: 1px solid var(--ios-border) !important;
+      border-radius: 999px !important;
+      color: var(--ios-text-muted) !important;
+    }
+
+    #settingsPanel .close-btn:hover,
+    #historyPanel .close-btn:hover {
+      color: var(--ios-text) !important;
+      border-color: var(--ios-border-strong) !important;
+      background: rgba(255, 255, 255, 0.1) !important;
+    }
+
     #recentSearches .search-tag,
     #recentSearches .recent-search-tag {
       background: rgba(24, 32, 47, 0.85) !important;
@@ -223,6 +268,22 @@
       color: #f7faff !important;
     }
 
+    #douban-tags button {
+      border-radius: 999px !important;
+      border: 1px solid var(--ios-border) !important;
+      background: rgba(255, 255, 255, 0.05) !important;
+      color: var(--ios-text-muted) !important;
+      transition: all 0.2s ease !important;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    #douban-tags button:hover {
+      color: var(--ios-text) !important;
+      border-color: var(--ios-border-strong) !important;
+      background: rgba(255, 255, 255, 0.11) !important;
+    }
+
     #douban-results > div,
     #results .card-hover {
       background: var(--ios-card) !important;
@@ -238,6 +299,64 @@
     #results .card-hover:hover {
       border-color: var(--ios-border-strong) !important;
       transform: translateY(-2px);
+    }
+
+    #douban-results > div .relative.w-full.aspect-\[2\/3\],
+    #results .search-card-img-container {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    #results .card-hover h3,
+    #results .card-hover p {
+      color: var(--ios-text) !important;
+    }
+
+    #results .card-hover .text-gray-400,
+    #results .card-hover .text-gray-500 {
+      color: var(--ios-text-muted) !important;
+    }
+
+    #historyPanel .history-item {
+      background: rgba(255, 255, 255, 0.04) !important;
+      border-radius: 14px !important;
+      border: 1px solid var(--ios-border) !important;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.24);
+      transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+    }
+
+    #historyPanel .history-item:hover {
+      transform: translateY(-1px);
+      border-color: var(--ios-border-strong) !important;
+      background: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    #historyPanel .history-title {
+      color: var(--ios-text) !important;
+    }
+
+    #historyPanel .history-meta,
+    #historyPanel .history-time {
+      color: var(--ios-text-muted) !important;
+    }
+
+    #historyPanel .progress-bar {
+      background: rgba(255, 255, 255, 0.12) !important;
+    }
+
+    #historyPanel .progress-filled {
+      background: linear-gradient(90deg, #67d4ff, #2b7dff) !important;
+    }
+
+    .fixed.top-4.left-4 button:active,
+    .fixed.top-4.right-4 button:active,
+    button[onclick="search()"]:active,
+    button[onclick="resetToHome()"]:active,
+    #douban-refresh:active,
+    #passwordSubmitBtn:active,
+    #passwordCancelBtn:active,
+    #acceptDisclaimerBtn:active {
+      transform: scale(0.97);
     }
 
     .footer {
@@ -264,12 +383,589 @@
       box-shadow: var(--ios-shadow) !important;
     }
 
+    #modal {
+      background: rgba(3, 6, 12, 0.72) !important;
+    }
+
+    #modal > div {
+      border-radius: 22px !important;
+      overflow: hidden;
+    }
+
+    #modal .flex.justify-between.items-center.mb-6.flex-none {
+      border-bottom: 1px solid var(--ios-border);
+      padding-bottom: 0.85rem;
+      margin-bottom: 1rem !important;
+    }
+
+    #modalTitle {
+      color: var(--ios-text) !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.01em;
+      background: none !important;
+      -webkit-text-fill-color: var(--ios-text) !important;
+    }
+
+    #modal button[onclick="closeModal()"] {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 999px;
+      border: 1px solid var(--ios-border);
+      color: var(--ios-text-muted) !important;
+      background: rgba(255, 255, 255, 0.03);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #modal button[onclick="closeModal()"]:hover {
+      color: var(--ios-text) !important;
+      border-color: var(--ios-border-strong);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    #modalContent {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+    }
+
+    #modalContent::-webkit-scrollbar {
+      width: 7px;
+    }
+
+    #modalContent::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    #modalContent::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 999px;
+    }
+
+    #modal .modal-detail-info {
+      background: rgba(20, 25, 36, 0.7) !important;
+      border: 1px solid var(--ios-border) !important;
+      border-radius: 14px !important;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    #modal .detail-label {
+      color: var(--ios-text-muted) !important;
+    }
+
+    #modal .detail-value,
+    #modal .detail-desc-content {
+      color: var(--ios-text) !important;
+    }
+
+    #modal .detail-desc {
+      border-top-color: var(--ios-border) !important;
+    }
+
+    #modal button[onclick^="toggleEpisodeOrder"],
+    #modal button[onclick="copyLinks()"] {
+      border-radius: 999px !important;
+      border: 1px solid var(--ios-border) !important;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    #modal button[onclick^="toggleEpisodeOrder"] {
+      background: rgba(255, 255, 255, 0.06) !important;
+      color: var(--ios-text) !important;
+    }
+
+    #modal button[onclick="copyLinks()"] {
+      background: linear-gradient(180deg, #2b7dff, #0a5ee0) !important;
+      color: #f7faff !important;
+    }
+
+    #episodesGrid button {
+      background: rgba(255, 255, 255, 0.04) !important;
+      border: 1px solid var(--ios-border) !important;
+      border-radius: 12px !important;
+      color: var(--ios-text) !important;
+      font-weight: 500;
+      transition: all 0.22s ease;
+    }
+
+    #episodesGrid button:hover {
+      background: rgba(255, 255, 255, 0.1) !important;
+      border-color: var(--ios-border-strong) !important;
+      transform: translateY(-1px);
+    }
+
+    #yellowFilterToggle + .toggle-bg,
+    #adFilterToggle + .toggle-bg,
+    #doubanToggle + .toggle-bg {
+      background: rgba(255, 255, 255, 0.15) !important;
+      border: 1px solid var(--ios-border) !important;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+    }
+
+    #yellowFilterToggle ~ .toggle-dot,
+    #adFilterToggle ~ .toggle-dot,
+    #doubanToggle ~ .toggle-dot {
+      background: linear-gradient(180deg, #ffffff, #e8edf8) !important;
+      box-shadow: 0 2px 7px rgba(0, 0, 0, 0.35) !important;
+    }
+
+    #yellowFilterToggle:checked + .toggle-bg,
+    #adFilterToggle:checked + .toggle-bg,
+    #doubanToggle:checked + .toggle-bg {
+      background: linear-gradient(180deg, #2b7dff, #0a5ee0) !important;
+      border-color: rgba(90, 200, 250, 0.45) !important;
+    }
+
+    #yellowFilterToggle:checked ~ .toggle-dot,
+    #adFilterToggle:checked ~ .toggle-dot,
+    #doubanToggle:checked ~ .toggle-dot {
+      transform: translateX(1.5rem);
+    }
+
+    #apiCheckboxes .form-checkbox {
+      border-radius: 4px !important;
+      border: 1px solid var(--ios-border) !important;
+      background: rgba(255, 255, 255, 0.05) !important;
+    }
+
+    #apiCheckboxes .form-checkbox:checked {
+      background: linear-gradient(180deg, #2b7dff, #0a5ee0) !important;
+      border-color: rgba(90, 200, 250, 0.45) !important;
+    }
+
     #toast {
       background: rgba(24, 29, 42, 0.92) !important;
       border: 1px solid var(--ios-border) !important;
       border-radius: 14px !important;
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
+    }
+
+    #passwordModal,
+    #disclaimerModal,
+    #loading {
+      background: rgba(3, 6, 12, 0.72) !important;
+    }
+
+    #passwordModal > div,
+    #disclaimerModal > div,
+    #loading > div {
+      border-radius: 22px !important;
+    }
+
+    #passwordModal h2,
+    #disclaimerModal h2 {
+      color: var(--ios-text) !important;
+      background: none !important;
+      -webkit-text-fill-color: var(--ios-text) !important;
+      letter-spacing: 0.01em;
+    }
+
+    #passwordModal p,
+    #disclaimerModal p {
+      color: var(--ios-text-muted) !important;
+    }
+
+    #passwordInput {
+      background: rgba(255, 255, 255, 0.04) !important;
+      border: 1px solid var(--ios-border) !important;
+      border-radius: 14px !important;
+      color: var(--ios-text) !important;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    #passwordInput::placeholder {
+      color: #8e97ad !important;
+    }
+
+    #passwordInput:focus {
+      border-color: rgba(10, 132, 255, 0.55) !important;
+      box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.18);
+    }
+
+    #passwordSubmitBtn,
+    #passwordCancelBtn,
+    #acceptDisclaimerBtn {
+      border-radius: 999px !important;
+      border: 1px solid var(--ios-border) !important;
+      color: #f7faff !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.01em;
+      background: linear-gradient(180deg, #2b7dff, #0a5ee0) !important;
+      box-shadow: 0 8px 18px rgba(10, 94, 224, 0.34);
+    }
+
+    #passwordSubmitBtn:hover,
+    #passwordCancelBtn:hover,
+    #acceptDisclaimerBtn:hover {
+      filter: brightness(1.06);
+    }
+
+    #disclaimerModal strong.text-blue-400 {
+      color: #76c7ff !important;
+    }
+
+    #loading > div {
+      background: rgba(15, 20, 30, 0.9) !important;
+      border: 1px solid var(--ios-border) !important;
+      color: var(--ios-text) !important;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: var(--ios-shadow);
+    }
+
+    #loading .animate-spin {
+      border-color: rgba(255, 255, 255, 0.24) !important;
+      border-top-color: #6eb9ff !important;
+    }
+
+    #toast {
+      color: var(--ios-text) !important;
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.38) !important;
+    }
+
+    #searchInput {
+      caret-color: #7fc8ff;
+    }
+
+    #searchInput::selection,
+    #searchInput::-moz-selection {
+      background: rgba(90, 200, 250, 0.28);
+      color: #f5f9ff;
+    }
+
+    #doubanArea .flex.items-center.bg-\[\#222\].rounded-full.p-1 {
+      background: rgba(255, 255, 255, 0.06) !important;
+      border: 1px solid var(--ios-border);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    #douban-movie-toggle,
+    #douban-tv-toggle {
+      min-width: 4.2rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    #douban-movie-toggle.bg-pink-600,
+    #douban-tv-toggle.bg-pink-600 {
+      background: linear-gradient(180deg, #2b7dff, #0a5ee0) !important;
+      color: #f7faff !important;
+      border-color: rgba(127, 200, 255, 0.5) !important;
+      box-shadow: 0 6px 14px rgba(10, 94, 224, 0.28);
+    }
+
+    #douban-movie-toggle.text-gray-300,
+    #douban-tv-toggle.text-gray-300 {
+      color: var(--ios-text-muted) !important;
+      background: transparent !important;
+    }
+
+    #historyPanel,
+    #settingsPanel,
+    #modal > div,
+    #passwordModal > div,
+    #disclaimerModal > div {
+      position: relative;
+    }
+
+    #historyPanel::before,
+    #settingsPanel::before,
+    #modal > div::before,
+    #passwordModal > div::before,
+    #disclaimerModal > div::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+      pointer-events: none;
+    }
+
+    #historyPanel::-webkit-scrollbar,
+    #settingsPanel::-webkit-scrollbar,
+    #modalContent::-webkit-scrollbar {
+      width: 7px;
+    }
+
+    #historyPanel::-webkit-scrollbar-track,
+    #settingsPanel::-webkit-scrollbar-track,
+    #modalContent::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    #historyPanel::-webkit-scrollbar-thumb,
+    #settingsPanel::-webkit-scrollbar-thumb,
+    #modalContent::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 999px;
+    }
+
+    #historyPanel::-webkit-scrollbar-thumb:hover,
+    #settingsPanel::-webkit-scrollbar-thumb:hover,
+    #modalContent::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.32);
+    }
+
+    footer.footer {
+      padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+    }
+
+    /* iOS polish */
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .container.mx-auto.px-4.py-8.flex.flex-col.h-screen {
+      padding-top: max(2.8rem, env(safe-area-inset-top));
+      padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    }
+
+    .notice-item {
+      color: #e7ecfb;
+      font-size: 0.76rem;
+      letter-spacing: 0.02em;
+    }
+
+    .notice-item a {
+      color: #8fd6ff !important;
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(143, 214, 255, 0.45);
+    }
+
+    .notice-item a:hover {
+      color: #b6e6ff !important;
+      border-bottom-color: rgba(182, 230, 255, 0.75);
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    a:focus-visible {
+      outline: 2px solid rgba(90, 200, 250, 0.65);
+      outline-offset: 2px;
+    }
+
+    #resultsArea .flex.justify-end.items-center.mb-4 > div {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--ios-border);
+      border-radius: 999px;
+      padding: 0.24rem 0.65rem;
+      color: var(--ios-text-muted) !important;
+    }
+
+    #doubanArea .mb-4,
+    #resultsArea .mx-auto.max-w-7xl.px-2 > .flex.justify-end.items-center.mb-4 {
+      position: relative;
+    }
+
+    #doubanArea .mb-4::after,
+    #resultsArea .mx-auto.max-w-7xl.px-2 > .flex.justify-end.items-center.mb-4::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -0.45rem;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+    }
+
+    #results .card-hover,
+    #douban-results > div {
+      transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease !important;
+    }
+
+    #results .card-hover:active,
+    #douban-results > div:active {
+      transform: scale(0.985);
+    }
+
+    #modal,
+    #passwordModal,
+    #disclaimerModal {
+      transition: opacity 0.22s ease;
+    }
+
+    #modal button[onclick="closeModal()"],
+    #settingsPanel .close-btn,
+    #historyPanel .close-btn {
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    @media (max-width: 420px) {
+      .notice-bar {
+        width: 96%;
+      }
+
+      header .inline-flex.items-center.justify-center.w-\[250px\].h-\[80px\] {
+        width: 220px !important;
+        height: 70px !important;
+      }
+
+      #douban-refresh {
+        padding-left: 0.65rem !important;
+        padding-right: 0.65rem !important;
+      }
+    }
+
+    header.text-center.mb-2 {
+      margin-top: 0.35rem;
+      margin-bottom: 0.75rem !important;
+    }
+
+    header.text-center.mb-2 > p {
+      color: var(--ios-text-muted) !important;
+      letter-spacing: 0.04em;
+      font-weight: 500;
+    }
+
+    header .inline-flex.items-center.justify-center.w-\[250px\].h-\[80px\] {
+      border: 1px solid var(--ios-border);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.38);
+      background-color: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    #searchResultsCount {
+      display: inline-flex;
+      min-width: 1.8rem;
+      justify-content: center;
+      align-items: center;
+      padding: 0.15rem 0.48rem;
+      margin-right: 0.25rem;
+      border-radius: 999px;
+      border: 1px solid var(--ios-border);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--ios-text);
+      font-weight: 600;
+    }
+
+    #settingsPanel input[type="text"],
+    #settingsPanel input[type="password"] {
+      background: rgba(255, 255, 255, 0.04) !important;
+      border: 1px solid var(--ios-border) !important;
+      border-radius: 10px !important;
+      color: var(--ios-text) !important;
+    }
+
+    #settingsPanel input::placeholder {
+      color: var(--ios-text-muted) !important;
+    }
+
+    #settingsPanel input:focus {
+      border-color: rgba(10, 132, 255, 0.55) !important;
+      box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.16);
+    }
+
+    #settingsPanel #apiCheckboxes,
+    #settingsPanel .max-h-40.overflow-y-auto.bg-\[\#191919\].p-2.rounded-lg.mb-3 {
+      background: rgba(255, 255, 255, 0.03) !important;
+      border: 1px solid var(--ios-border) !important;
+      border-radius: 12px !important;
+    }
+
+    #doubanArea h2 {
+      color: var(--ios-text) !important;
+      letter-spacing: 0.01em;
+    }
+
+    #doubanArea #douban-results {
+      gap: 0.9rem !important;
+    }
+
+    #doubanArea .overflow-x-auto.pb-2 {
+      mask-image: linear-gradient(to right, transparent, #000 12px, #000 calc(100% - 12px), transparent);
+    }
+
+    .footer a {
+      color: var(--ios-text-muted) !important;
+      text-decoration: none !important;
+      transition: color 0.2s ease, opacity 0.2s ease;
+    }
+
+    .footer a:hover {
+      color: var(--ios-text) !important;
+      opacity: 1;
+    }
+
+    .footer p {
+      color: var(--ios-text-muted) !important;
+    }
+
+    #modal > div,
+    #passwordModal > div,
+    #disclaimerModal > div,
+    #loading > div {
+      animation: ios-modal-in 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes ios-modal-in {
+      from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .notice-bar {
+        width: 94%;
+      }
+
+      .container.mx-auto.px-4.py-8.flex.flex-col.h-screen {
+        padding-left: 0.85rem;
+        padding-right: 0.85rem;
+      }
+
+      #searchArea .w-full.max-w-2xl {
+        max-width: 100%;
+      }
+
+      #searchArea .flex.items-stretch.mb-3.h-14.shadow-lg.rounded-lg.overflow-hidden {
+        border-radius: 16px !important;
+      }
+
+      #doubanArea .mx-auto.max-w-screen-xl.px-2,
+      #resultsArea .mx-auto.max-w-7xl.px-2 {
+        border-radius: 16px;
+        padding: 0.75rem 0.55rem;
+      }
+
+      #douban-results > div,
+      #results .card-hover {
+        border-radius: 14px !important;
+      }
+
+      #modal > div,
+      #passwordModal > div,
+      #disclaimerModal > div {
+        border-radius: 18px !important;
+        width: calc(100% - 1rem) !important;
+      }
+
+      #modal .flex.justify-between.items-center.mb-6.flex-none {
+        margin-bottom: 0.8rem !important;
+      }
     }
   </style>
     
