@@ -52,6 +52,7 @@ let doubanMovieTvCurrentSwitch = 'movie';
 let doubanCurrentTag = '热门';
 let doubanPageStart = 0;
 const doubanPageSize = 16; // 一次显示的项目数量
+const doubanSearchCoverCache = new Map();
 const DOUBAN_LOCAL_PLACEHOLDER = 'image/YuHuanTVLogonew.png';
 
 // 初始化豆瓣功能
@@ -529,12 +530,12 @@ function renderDoubanCards(data, container) {
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;');
             
-            // 为不同设备优化卡片布局（封面统一使用本地占位图）
+            // 为不同设备优化卡片布局
             card.innerHTML = `
                 <div class="relative w-full aspect-[2/3] overflow-hidden cursor-pointer" onclick="fillAndSearchWithDouban('${safeTitle}')">
                     <img src="${DOUBAN_LOCAL_PLACEHOLDER}" alt="${safeTitle}" 
                         class="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                        onerror="this.onerror=null; this.src='${DOUBAN_LOCAL_PLACEHOLDER}'; this.classList.add('object-contain')"
+                        data-douban-title="${safeTitle}"
                         loading="lazy" referrerpolicy="no-referrer">
                     <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
                     <div class="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-sm">
@@ -562,6 +563,69 @@ function renderDoubanCards(data, container) {
     // 清空并添加所有新元素
     container.innerHTML = "";
     container.appendChild(fragment);
+
+    // 卡片渲染完成后，再异步填充真实封面（使用与搜索结果同源的 vod_pic）
+    hydrateDoubanCardsCover(container);
+}
+
+async function getCoverFromSearch(title) {
+    const normalizedTitle = (title || '').trim();
+    if (!normalizedTitle) return '';
+
+    if (doubanSearchCoverCache.has(normalizedTitle)) {
+        return doubanSearchCoverCache.get(normalizedTitle);
+    }
+
+    try {
+        // 优先复用 search.js 的多源搜索函数，和 /s=xxx 页面一致
+        if (typeof window.searchByAPIAndKeyWord === 'function') {
+            const selected = JSON.parse(localStorage.getItem('selectedAPIs') || '[]');
+            const candidates = selected.length > 0 ? selected : ['tyyszy', 'bfzy', 'dyttzy', 'ruyi'];
+
+            for (const apiId of candidates) {
+                try {
+                    const list = await window.searchByAPIAndKeyWord(apiId, normalizedTitle);
+                    if (!Array.isArray(list) || list.length === 0) continue;
+
+                    const exact = list.find(item => (item?.vod_name || '').trim() === normalizedTitle);
+                    const fallback = list.find(item => typeof item?.vod_pic === 'string' && item.vod_pic.startsWith('http'));
+                    const cover = (exact?.vod_pic && exact.vod_pic.startsWith('http')) ? exact.vod_pic : (fallback?.vod_pic || '');
+                    if (cover) {
+                        doubanSearchCoverCache.set(normalizedTitle, cover);
+                        return cover;
+                    }
+                } catch (e) {
+                    // 单源失败跳过，继续下一个
+                }
+            }
+        }
+
+        doubanSearchCoverCache.set(normalizedTitle, '');
+        return '';
+    } catch (e) {
+        doubanSearchCoverCache.set(normalizedTitle, '');
+        return '';
+    }
+}
+
+async function hydrateDoubanCardsCover(container) {
+    if (!container) return;
+
+    const images = container.querySelectorAll('img[data-douban-title]');
+    for (const img of images) {
+        if (img.dataset.coverHydrated === '1') continue;
+        img.dataset.coverHydrated = '1';
+
+        const title = img.dataset.doubanTitle || img.alt || '';
+        const cover = await getCoverFromSearch(title);
+        if (cover) {
+            img.src = cover;
+            img.classList.remove('object-contain');
+        } else {
+            img.src = DOUBAN_LOCAL_PLACEHOLDER;
+            img.classList.add('object-contain');
+        }
+    }
 }
 
 // 重置到首页
