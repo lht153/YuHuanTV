@@ -22,8 +22,34 @@
 
 <style>
     :root {
-      --bar-height: 20px;        /* 公告栏高度 */
-      --scroll-duration: 30s;    /* 完整滚动一轮时间（越小越快） */
+      --bar-height: 22px;
+      --scroll-duration: 30s;
+      --ios-bg-0: #090b10;
+      --ios-bg-1: #11151f;
+      --ios-bg-2: #171c28;
+      --ios-card: rgba(20, 24, 34, 0.68);
+      --ios-card-strong: rgba(16, 20, 30, 0.9);
+      --ios-border: rgba(255, 255, 255, 0.08);
+      --ios-border-strong: rgba(255, 255, 255, 0.16);
+      --ios-text: #f2f5ff;
+      --ios-text-muted: #a5adc2;
+      --ios-accent: #0a84ff;
+      --ios-accent-2: #5ac8fa;
+      --ios-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
+    }
+
+    body.page-bg {
+      background:
+        radial-gradient(circle at 20% 0%, #1b2334 0%, transparent 45%),
+        radial-gradient(circle at 85% 10%, #162038 0%, transparent 40%),
+        linear-gradient(180deg, var(--ios-bg-0), var(--ios-bg-1) 45%, var(--ios-bg-2));
+      color: var(--ios-text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      letter-spacing: 0.01em;
+    }
+
+    a {
+      color: var(--ios-accent-2);
     }
 
     .notice-bar {
@@ -35,10 +61,12 @@
       max-width: 1200px;
       height: var(--bar-height);
       line-height: var(--bar-height);
-      background: rgba(255,255,255,0.2);
-      backdrop-filter: blur(6px);
-      border-radius: 6px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.2);
+      background: rgba(18, 24, 36, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--ios-border);
+      border-radius: 12px;
+      box-shadow: var(--ios-shadow);
       overflow: hidden;
       z-index: 9999;
       white-space: nowrap;
@@ -63,6 +91,163 @@
     @keyframes scroll-left {
       from { transform: translateX(0); }
       to   { transform: translateX(-50%); }
+    }
+
+    .container.mx-auto.px-4.py-8.flex.flex-col.h-screen {
+      padding-top: 2.8rem;
+    }
+
+    .fixed.top-4.left-4 button,
+    .fixed.top-4.right-4 button {
+      background: rgba(18, 24, 36, 0.72) !important;
+      border: 1px solid var(--ios-border) !important;
+      border-radius: 14px !important;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+      color: var(--ios-text) !important;
+    }
+
+    .fixed.top-4.left-4 button:hover,
+    .fixed.top-4.right-4 button:hover {
+      border-color: var(--ios-border-strong) !important;
+      background: rgba(30, 38, 56, 0.78) !important;
+    }
+
+    #historyPanel,
+    #settingsPanel {
+      background: rgba(16, 20, 30, 0.8) !important;
+      border-color: var(--ios-border) !important;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: var(--ios-shadow);
+    }
+
+    #settingsPanel .p-3.bg-\[\#151515\],
+    #historyPanel .history-item {
+      background: var(--ios-card) !important;
+      border: 1px solid var(--ios-border) !important;
+      border-radius: 14px !important;
+      box-shadow: none !important;
+    }
+
+    #searchArea .flex.items-stretch.mb-3.h-14.shadow-lg.rounded-lg.overflow-hidden {
+      height: 3.65rem !important;
+      border-radius: 18px !important;
+      border: 1px solid var(--ios-border);
+      background: rgba(16, 22, 33, 0.74);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: var(--ios-shadow);
+    }
+
+    #searchInput {
+      background: transparent !important;
+      border-color: transparent !important;
+      color: var(--ios-text) !important;
+    }
+
+    #searchInput::placeholder {
+      color: var(--ios-text-muted) !important;
+    }
+
+    #clearSearchInput {
+      background: transparent !important;
+      border-color: transparent !important;
+      color: var(--ios-text-muted) !important;
+    }
+
+    button[onclick="search()"],
+    button[onclick="resetToHome()"] {
+      background: linear-gradient(180deg, #2a3146, #1f2638) !important;
+      color: var(--ios-text) !important;
+      border: 1px solid var(--ios-border) !important;
+      font-weight: 600 !important;
+    }
+
+    button[onclick="search()"]:hover,
+    button[onclick="resetToHome()"]:hover {
+      background: linear-gradient(180deg, #353d56, #242d41) !important;
+    }
+
+    #recentSearches .search-tag,
+    #recentSearches .recent-search-tag {
+      background: rgba(24, 32, 47, 0.85) !important;
+      color: var(--ios-text) !important;
+      border: 1px solid var(--ios-border) !important;
+      border-radius: 999px !important;
+      backdrop-filter: blur(10px);
+    }
+
+    #doubanArea .mx-auto.max-w-screen-xl.px-2,
+    #resultsArea .mx-auto.max-w-7xl.px-2 {
+      background: rgba(15, 19, 28, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 20px;
+      padding: 1rem 0.75rem;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    #douban-movie-toggle,
+    #douban-tv-toggle,
+    #douban-refresh {
+      border-radius: 999px !important;
+      border: 1px solid var(--ios-border) !important;
+    }
+
+    #douban-refresh {
+      background: linear-gradient(180deg, #2776ff, #0a5ad9) !important;
+      color: #f7faff !important;
+    }
+
+    #douban-results > div,
+    #results .card-hover {
+      background: var(--ios-card) !important;
+      border: 1px solid var(--ios-border) !important;
+      border-radius: 16px !important;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3) !important;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      overflow: hidden;
+    }
+
+    #douban-results > div:hover,
+    #results .card-hover:hover {
+      border-color: var(--ios-border-strong) !important;
+      transform: translateY(-2px);
+    }
+
+    .footer {
+      background: rgba(10, 14, 22, 0.82) !important;
+      border-top: 1px solid var(--ios-border) !important;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    #modal,
+    #passwordModal,
+    #disclaimerModal {
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    #modal > div,
+    #passwordModal > div,
+    #disclaimerModal > div,
+    #loading > div {
+      background: var(--ios-card-strong) !important;
+      border: 1px solid var(--ios-border) !important;
+      border-radius: 18px !important;
+      box-shadow: var(--ios-shadow) !important;
+    }
+
+    #toast {
+      background: rgba(24, 29, 42, 0.92) !important;
+      border: 1px solid var(--ios-border) !important;
+      border-radius: 14px !important;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
   </style>
     
