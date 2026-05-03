@@ -52,6 +52,7 @@ let doubanMovieTvCurrentSwitch = 'movie';
 let doubanCurrentTag = '热门';
 let doubanPageStart = 0;
 const doubanPageSize = 16; // 一次显示的项目数量
+const doubanSearchCoverCache = new Map();
 
 // 初始化豆瓣功能
 function initDouban() {
@@ -529,18 +530,15 @@ function renderDoubanCards(data, container) {
                 .replace(/>/g, '&gt;');
             
             // 处理图片URL
-            // 1. 优先直接使用豆瓣图片URL
+            // 首图仍尝试豆瓣封面，失败后会改用站内搜索结果里的 vod_pic 作为兜底
             const originalCoverUrl = item.cover;
-            
-            // 2. 准备代理URL作为备选（实际使用时会动态补鉴权参数）
-            const proxiedCoverUrl = PROXY_URL + encodeURIComponent(originalCoverUrl);
             
             // 为不同设备优化卡片布局
             card.innerHTML = `
                 <div class="relative w-full aspect-[2/3] overflow-hidden cursor-pointer" onclick="fillAndSearchWithDouban('${safeTitle}')">
                     <img src="${originalCoverUrl}" alt="${safeTitle}" 
                         class="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                        data-proxy-cover-url="${proxiedCoverUrl}"
+                        data-douban-title="${safeTitle}"
                         onerror="handleDoubanImageError(this)"
                         loading="lazy" referrerpolicy="no-referrer">
                     <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
@@ -571,30 +569,57 @@ function renderDoubanCards(data, container) {
     container.appendChild(fragment);
 }
 
+async function getCoverFromSearch(title) {
+    const normalizedTitle = (title || '').trim();
+    if (!normalizedTitle) return '';
+
+    if (doubanSearchCoverCache.has(normalizedTitle)) {
+        return doubanSearchCoverCache.get(normalizedTitle);
+    }
+
+    try {
+        // 直接复用站内搜索接口，从 dbzy 里拿可展示的 vod_pic
+        const response = await fetch(`/api/search?wd=${encodeURIComponent(normalizedTitle)}&source=dbzy`);
+        if (!response.ok) {
+            doubanSearchCoverCache.set(normalizedTitle, '');
+            return '';
+        }
+
+        const data = await response.json();
+        const list = Array.isArray(data?.list) ? data.list : [];
+        if (list.length === 0) {
+            doubanSearchCoverCache.set(normalizedTitle, '');
+            return '';
+        }
+
+        // 优先同名结果，其次取首个有封面的结果
+        const exact = list.find(item => (item?.vod_name || '').trim() === normalizedTitle);
+        const fallback = list.find(item => typeof item?.vod_pic === 'string' && item.vod_pic.startsWith('http'));
+        const cover = (exact?.vod_pic && exact.vod_pic.startsWith('http')) ? exact.vod_pic : (fallback?.vod_pic || '');
+
+        doubanSearchCoverCache.set(normalizedTitle, cover);
+        return cover;
+    } catch (e) {
+        doubanSearchCoverCache.set(normalizedTitle, '');
+        return '';
+    }
+}
+
 // 豆瓣封面加载失败时兜底处理：
-// 1) 先切到代理图地址（自动补鉴权） 2) 仍失败则显示占位图
+// 1) 用站内搜索结果的 vod_pic  2) 仍失败则占位图
 async function handleDoubanImageError(img) {
     if (!img) return;
 
-    // 第一次失败：尝试走代理（并补 auth 参数）
-    if (!img.dataset.triedProxy) {
-        img.dataset.triedProxy = '1';
-        const rawProxyUrl = img.dataset.proxyCoverUrl;
-        if (!rawProxyUrl) {
-            img.onerror = null;
-            img.src = 'https://via.placeholder.com/300x450?text=无封面';
-            img.classList.add('object-contain');
-            return;
-        }
+    // 第一次失败：尝试走“搜索页同逻辑”的封面来源（vod_pic）
+    if (!img.dataset.triedSearchCover) {
+        img.dataset.triedSearchCover = '1';
+        const title = img.dataset.doubanTitle || img.alt || '';
+        const fallbackCover = await getCoverFromSearch(title);
 
-        try {
-            const proxiedUrl = await window.ProxyAuth?.addAuthToProxyUrl
-                ? await window.ProxyAuth.addAuthToProxyUrl(rawProxyUrl)
-                : rawProxyUrl;
-            img.src = proxiedUrl;
+        if (fallbackCover) {
+            img.src = fallbackCover;
+            img.classList.remove('object-contain');
             return;
-        } catch (e) {
-            // 失败后继续走最终兜底
         }
     }
 
