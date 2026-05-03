@@ -7,6 +7,136 @@
 	<script src="libs/tailwindcss.min.js"></script>
 	<link rel="stylesheet" href="css/styles.css">
 	<link rel="manifest" href="manifest.json">
+	<style>
+		:root {
+			--ios-bg-0: #090b10;
+			--ios-bg-1: #11151f;
+			--ios-bg-2: #171c28;
+			--ios-card: rgba(20, 24, 34, 0.68);
+			--ios-card-strong: rgba(16, 20, 30, 0.9);
+			--ios-border: rgba(255, 255, 255, 0.08);
+			--ios-border-strong: rgba(255, 255, 255, 0.16);
+			--ios-text: #f2f5ff;
+			--ios-text-muted: #a5adc2;
+			--ios-accent: #0a84ff;
+			--ios-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
+		}
+
+		body.page-bg {
+			background:
+				radial-gradient(circle at 20% 0%, #1b2334 0%, transparent 45%),
+				radial-gradient(circle at 85% 10%, #162038 0%, transparent 40%),
+				linear-gradient(180deg, var(--ios-bg-0), var(--ios-bg-1) 45%, var(--ios-bg-2)) !important;
+			color: var(--ios-text);
+			font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+		}
+
+		header {
+			background: rgba(16, 20, 30, 0.78) !important;
+			backdrop-filter: blur(16px);
+			-webkit-backdrop-filter: blur(16px);
+			border-bottom: 1px solid var(--ios-border) !important;
+			box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+		}
+
+		header h2 {
+			color: var(--ios-text) !important;
+			letter-spacing: 0.01em;
+		}
+
+		header a[href="/"] {
+			background: rgba(255, 255, 255, 0.06) !important;
+			border: 1px solid var(--ios-border) !important;
+			border-radius: 999px !important;
+			color: var(--ios-text) !important;
+			backdrop-filter: blur(10px);
+			-webkit-backdrop-filter: blur(10px);
+		}
+
+		header a[href="/"]:hover {
+			background: rgba(255, 255, 255, 0.12) !important;
+			border-color: var(--ios-border-strong) !important;
+		}
+
+		main .bg-gradient-to-br.from-\[\#111\].to-\[\#0a0a0a\] {
+			background: var(--ios-card-strong) !important;
+			border: 1px solid var(--ios-border) !important;
+			box-shadow: var(--ios-shadow) !important;
+			backdrop-filter: blur(14px);
+			-webkit-backdrop-filter: blur(14px);
+		}
+
+		main .bg-\[\#1a1a1a\],
+		main .bg-gradient-to-r.from-\[\#222\].to-\[\#333\],
+		main .p-3.bg-\[\#151515\] {
+			background: var(--ios-card) !important;
+			border: 1px solid var(--ios-border) !important;
+			border-radius: 14px !important;
+			box-shadow: none !important;
+		}
+
+		main h2, main h3, main h4 {
+			color: var(--ios-text) !important;
+			background: none !important;
+			-webkit-text-fill-color: var(--ios-text) !important;
+		}
+
+		main p, main span, main label {
+			color: var(--ios-text-muted) !important;
+		}
+
+		main a.inline-flex,
+		main a[href^="mailto:"] {
+			border-radius: 999px !important;
+			border: 1px solid var(--ios-border) !important;
+			background: linear-gradient(180deg, #2b7dff, #0a5ee0) !important;
+			color: #f7faff !important;
+			font-weight: 600 !important;
+			box-shadow: 0 8px 18px rgba(10, 94, 224, 0.34);
+		}
+
+		main a.inline-flex:hover,
+		main a[href^="mailto:"]:hover {
+			filter: brightness(1.06);
+		}
+
+		footer.footer {
+			background: rgba(10, 14, 22, 0.82) !important;
+			border-top: 1px solid var(--ios-border) !important;
+			backdrop-filter: blur(14px);
+			-webkit-backdrop-filter: blur(14px);
+			padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+		}
+
+		footer p, footer a {
+			color: var(--ios-text-muted) !important;
+		}
+
+		footer a:hover {
+			color: var(--ios-text) !important;
+		}
+
+		button:focus-visible,
+		input:focus-visible,
+		a:focus-visible {
+			outline: 2px solid rgba(90, 200, 250, 0.65);
+			outline-offset: 2px;
+		}
+
+		header a[href="/"]:active,
+		main a.inline-flex:active {
+			transform: scale(0.98);
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			* {
+				animation: none !important;
+				transition: none !important;
+			}
+		}
+	</style>
 	
 	<!-- Favicon -->
     <link rel="icon" href="image/YuHuanTVLogonew.png">
