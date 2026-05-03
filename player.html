@@ -15,6 +15,305 @@
     <script src="js/version-check.js"></script>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/player.css">
+    <style>
+        :root {
+            --ios-bg-0: #090b10;
+            --ios-bg-1: #11151f;
+            --ios-bg-2: #171c28;
+            --ios-card: rgba(20, 24, 34, 0.68);
+            --ios-card-strong: rgba(16, 20, 30, 0.9);
+            --ios-border: rgba(255, 255, 255, 0.08);
+            --ios-border-strong: rgba(255, 255, 255, 0.16);
+            --ios-text: #f2f5ff;
+            --ios-text-muted: #a5adc2;
+            --ios-accent: #0a84ff;
+            --ios-accent-2: #5ac8fa;
+            --ios-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
+        }
+
+        html, body {
+            background:
+              radial-gradient(circle at 20% 0%, #1b2334 0%, transparent 45%),
+              radial-gradient(circle at 85% 10%, #162038 0%, transparent 40%),
+              linear-gradient(180deg, var(--ios-bg-0), var(--ios-bg-1) 45%, var(--ios-bg-2)) !important;
+            color: var(--ios-text);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .player-header-fixed {
+            background: rgba(16, 20, 30, 0.78) !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--ios-border) !important;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+        }
+
+        #videoTitle {
+            color: var(--ios-text) !important;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+
+        #goBack {
+            background: rgba(255, 255, 255, 0.06) !important;
+            border: 1px solid var(--ios-border) !important;
+            border-radius: 999px !important;
+            color: var(--ios-text) !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        #goBack:hover {
+            background: rgba(255, 255, 255, 0.12) !important;
+            border-color: var(--ios-border-strong) !important;
+        }
+
+        .player-container {
+            background: var(--ios-card);
+            border: 1px solid var(--ios-border);
+            border-radius: 18px;
+            box-shadow: var(--ios-shadow);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 0.55rem;
+        }
+
+        #playerContainer.player-container {
+            padding: 0.4rem;
+        }
+
+        #player,
+        .player-placeholder {
+            border-radius: 14px !important;
+            overflow: hidden !important;
+        }
+
+        #resourceInfoBarContainer {
+            background: rgba(255, 255, 255, 0.06) !important;
+            border: 1px solid var(--ios-border) !important;
+            border-radius: 14px !important;
+            box-shadow: none !important;
+        }
+
+        .resource-info-bar-left,
+        .resource-info-bar-videos {
+            color: var(--ios-text) !important;
+        }
+
+        .resource-switch-btn {
+            color: #8fd6ff !important;
+            border: 1px solid var(--ios-border) !important;
+            background: rgba(255, 255, 255, 0.05) !important;
+            border-radius: 999px !important;
+        }
+
+        .resource-switch-btn:hover {
+            background: rgba(255, 255, 255, 0.12) !important;
+            border-color: var(--ios-border-strong) !important;
+        }
+
+        #prevButton, #nextButton,
+        button[onclick="toggleEpisodeOrder()"],
+        button[onclick="copyLinks()"],
+        #lockToggle {
+            background: rgba(255, 255, 255, 0.06) !important;
+            border: 1px solid var(--ios-border) !important;
+            border-radius: 12px !important;
+            color: var(--ios-text) !important;
+        }
+
+        #prevButton:hover, #nextButton:hover,
+        button[onclick="toggleEpisodeOrder()"]:hover,
+        button[onclick="copyLinks()"]:hover,
+        #lockToggle:hover {
+            background: rgba(255, 255, 255, 0.12) !important;
+            border-color: var(--ios-border-strong) !important;
+        }
+
+        #episodeInfo,
+        .text-gray-400 {
+            color: var(--ios-text-muted) !important;
+        }
+
+        .switch .slider {
+            background: rgba(255, 255, 255, 0.15) !important;
+            border: 1px solid var(--ios-border);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+        }
+
+        .switch .slider:before {
+            background: linear-gradient(180deg, #ffffff, #e8edf8) !important;
+            box-shadow: 0 2px 7px rgba(0, 0, 0, 0.35);
+        }
+
+        .switch input:checked + .slider {
+            background: linear-gradient(180deg, #2b7dff, #0a5ee0) !important;
+            border-color: rgba(90, 200, 250, 0.45);
+        }
+
+        #episodesList button {
+            background: rgba(255, 255, 255, 0.04) !important;
+            border: 1px solid var(--ios-border) !important;
+            border-radius: 12px !important;
+            color: var(--ios-text) !important;
+            transition: all 0.22s ease;
+        }
+
+        #episodesList button:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border-color: var(--ios-border-strong) !important;
+            transform: translateY(-1px);
+        }
+
+        .episode-active {
+            background: linear-gradient(180deg, #2b7dff, #0a5ee0) !important;
+            border-color: rgba(90, 200, 250, 0.45) !important;
+        }
+
+        .shortcut-hint {
+            background: rgba(15, 20, 30, 0.86) !important;
+            border: 1px solid var(--ios-border) !important;
+            border-radius: 14px !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .footer {
+            background: rgba(10, 14, 22, 0.82) !important;
+            border-top: 1px solid var(--ios-border) !important;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+        }
+
+        .footer p, .footer a {
+            color: var(--ios-text-muted) !important;
+        }
+
+        .footer a:hover {
+            color: var(--ios-text) !important;
+        }
+
+        #passwordModal,
+        #modal,
+        #loading {
+            background: rgba(3, 6, 12, 0.72) !important;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        #passwordModal > div,
+        #modal > div,
+        #loading > div {
+            background: var(--ios-card-strong) !important;
+            border: 1px solid var(--ios-border) !important;
+            border-radius: 22px !important;
+            box-shadow: var(--ios-shadow) !important;
+            animation: ios-modal-in 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        #passwordInput {
+            background: rgba(255, 255, 255, 0.04) !important;
+            border: 1px solid var(--ios-border) !important;
+            border-radius: 14px !important;
+            color: var(--ios-text) !important;
+        }
+
+        #passwordInput::placeholder {
+            color: #8e97ad !important;
+        }
+
+        #passwordInput:focus {
+            border-color: rgba(10, 132, 255, 0.55) !important;
+            box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.18);
+        }
+
+        #passwordSubmitBtn {
+            border-radius: 999px !important;
+            border: 1px solid var(--ios-border) !important;
+            color: #f7faff !important;
+            font-weight: 600 !important;
+            background: linear-gradient(180deg, #2b7dff, #0a5ee0) !important;
+            box-shadow: 0 8px 18px rgba(10, 94, 224, 0.34);
+        }
+
+        #passwordSubmitBtn:hover {
+            filter: brightness(1.06);
+        }
+
+        #modalTitle {
+            color: var(--ios-text) !important;
+            background: none !important;
+            -webkit-text-fill-color: var(--ios-text) !important;
+        }
+
+        #modal button[onclick="closeModal()"] {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 999px;
+            border: 1px solid var(--ios-border);
+            color: var(--ios-text-muted) !important;
+            background: rgba(255, 255, 255, 0.03);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #modal button[onclick="closeModal()"]:hover {
+            color: var(--ios-text) !important;
+            border-color: var(--ios-border-strong);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        @keyframes ios-modal-in {
+            from { opacity: 0; transform: translateY(12px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .player-header-fixed {
+                padding-top: max(0.75rem, env(safe-area-inset-top)) !important;
+            }
+
+            .player-container {
+                border-radius: 14px;
+                padding: 0.4rem;
+            }
+
+            #modal > div,
+            #passwordModal > div {
+                border-radius: 18px !important;
+                width: calc(100% - 1rem) !important;
+            }
+        }
+
+        button:focus-visible,
+        input:focus-visible,
+        a:focus-visible {
+            outline: 2px solid rgba(90, 200, 250, 0.65);
+            outline-offset: 2px;
+        }
+
+        #goBack:active,
+        #prevButton:active,
+        #nextButton:active,
+        button[onclick="toggleEpisodeOrder()"]:active,
+        button[onclick="copyLinks()"]:active,
+        #lockToggle:active,
+        #passwordSubmitBtn:active {
+            transform: scale(0.97);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
     
     <meta http-equiv="Cache-Control" content="no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
